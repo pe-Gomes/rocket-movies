@@ -48,7 +48,9 @@ export const Logout = styled.div`
     align-self: flex-end;
   }
   
-  > a {
+  > button {    
+    background: none;
+    border: none;
     color: ${({theme})=> theme.COLORS.GRAY_300};
     align-self: flex-end;
   }

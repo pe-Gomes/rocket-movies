@@ -1,11 +1,23 @@
+import { useState } from 'react';
+import { useAuth } from '../../hooks/auth';
+
 import {AiOutlineLock, AiOutlineMail } from 'react-icons/ai'
 import { Link } from 'react-router-dom';
 
 import { Container, Form, BackgroundImg } from './styles';
-import { Input } from '../../components/Input'
-import { Button } from '../../components/Button'
+import { Input } from '../../components/Input';
+import { Button } from '../../components/Button';
 
 export function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { signIn } = useAuth();
+
+  function handleSignIn() {
+    signIn({ email, password });
+  }
+
   return (
     <Container>
       <Form>
@@ -18,14 +30,16 @@ export function SignIn() {
         type='email'
         placeholder='E-mail'
         icon={AiOutlineMail}
+        onChange={e => setEmail(e.target.value)}
         />
         <Input
         type='password'
         placeholder='Senha'
         icon={AiOutlineLock}
+        onChange={e => setPassword(e.target.value)}
         />
         
-        <Button title='Entrar'/>
+        <Button title='Entrar' onClick= {handleSignIn} />
         <Link to="/register" href="#">Criar conta</Link>
       </Form>
 

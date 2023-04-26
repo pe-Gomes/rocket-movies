@@ -16,6 +16,8 @@ export const Container = styled.div`
     padding: 40px 124px 40px;
     margin: 0 auto;
 
+    width: 100%;
+
     overflow-y: auto;
 
     > div:first-child {

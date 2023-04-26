@@ -15,6 +15,7 @@ export const Container = styled.div`
   > main {
     padding: 40px 112px 156px;
 
+    min-width: 1008px;
     margin: 0 auto;
 
     max-width: 1400px;
@@ -28,6 +29,15 @@ export const Container = styled.div`
       font-size: 16px;
       font-weight: 400;
       line-height: 24px;
+    }
+
+    > button {
+    width: 25%;
+
+    margin: 48px auto 0;
+    
+    background-color: ${({theme})=>theme.COLORS.BACKGROUND_700};
+    color: ${({theme})=>theme.COLORS.PINK};
     }
   }
 

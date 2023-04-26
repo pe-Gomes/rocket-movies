@@ -24,6 +24,7 @@ export const Form = styled.form`
 
   > header {
     margin: 24px 0 40px;
+    width: fit-content;
   }
 `;
 
@@ -41,16 +42,27 @@ export const MovieDetails = styled.div`
 `;
 
 export const NewTag = styled.div`
+  
   background-color: ${({theme})=>theme.COLORS.BACKGROUND_800};
   border-radius: 8px;
 
-  display: flex;
-  gap: 24px;
-
   padding: 16px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 16px;
+
+
+  > div:nth-child(3n + 1) {
+    grid-column: 1;
+  }
+
 `;
 
 export const Submit = styled.div`
+  width: 50%;
+  margin: 0 auto;
+
   display: flex;
   gap: 40px;
 

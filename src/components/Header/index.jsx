@@ -1,8 +1,29 @@
-import { Container, Brand, Search, Profile, Logout } from './styles'
+import { useState } from 'react';
+import { useAuth } from '../../hooks/auth';
+import { api } from '../../services/api';
 
-import { Input } from '../Input'
+import { useNavigate } from 'react-router-dom';
 
-export function Header() {
+import { Container, Brand, Search, Profile, Logout } from './styles';
+
+import avatarPlaceholder from '../../assets/avatar_placeholder.svg'
+
+import { Input } from '../Input';
+
+export function Header({ setSearch, children }) {
+  const navigate = useNavigate();
+  const { signOut, user } = useAuth();
+  const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : avatarPlaceholder;
+
+  function handleSignOut () {
+    signOut();
+    navigate("/");
+  }
+
+  async function handleSearch(event) {
+    setSearch(event.target.value);
+  }
+
   return (
     <Container>
       
@@ -11,20 +32,23 @@ export function Header() {
       </Brand>
 
       <Search>
-        <Input placeholder="Pesquisar pelo título" />
+        <Input placeholder="Pesquisar pelo título" 
+        onChange={handleSearch}
+      />
+        {children}
       </Search>
 
       <div>
         <Logout>
-          <strong>Pedro Gomes</strong>
-          <a href="/">sair</a>  
+          <strong>{user.name}</strong>
+          <button onClick={handleSignOut} >sair</button>
         </Logout>
 
         <Profile to="/profile" >
-          <img src="https://github.com/pe-gomes.png" alt="Imagem do usuário" />
+          <img src={avatarUrl} alt="Imagem do usuário" />
         </Profile>
       </div>
-
+      
     </Container>
   )
 }

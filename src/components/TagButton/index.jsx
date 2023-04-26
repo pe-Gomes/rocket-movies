@@ -1,10 +1,21 @@
 import { Container } from './styles';
+import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 
-export function TagButton({ icon: Icon, isActive = false, title, ...rest }) {
+export function TagButton({ value, isNew, onClick, ...rest  }) {
   return (
-    <Container  isActive={isActive}  {...rest}>
-      {title}
-      {Icon && <Icon />}
+    <Container  isNew={isNew} {...rest} >
+      <input
+        type="text"
+        value={value}
+        {...rest}
+      />
+
+      <button
+      type='button'
+      onClick={onClick}
+      >
+        {isNew ? <AiOutlinePlus /> : <AiOutlineClose /> }
+      </button>
     </Container>
   );
 }

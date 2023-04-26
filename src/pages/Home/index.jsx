@@ -1,18 +1,40 @@
-import { AiOutlinePlus } from 'react-icons/ai'
+import { useState, useEffect } from 'react';
+import { api } from '../../services/api';
+import { useAuth } from '../../hooks/auth';
 
-import { Link } from 'react-router-dom';
+import { AiOutlinePlus } from 'react-icons/ai';
+
+import { useNavigate } from 'react-router-dom';
 
 import { Container, Movies, Stars, NewItem } from './styles';
 
-import { Header } from '../../components/Header'
-import { Button } from '../../components/Button'
-import { Rating } from '../../components/Rating'
-import { Tags } from '../../components/Tags'
+import { Header } from '../../components/Header';
+import { Button } from '../../components/Button';
+import { Rating } from '../../components/Rating';
+import { Tags } from '../../components/Tags';
 
 export function Home(){
+  const [movieNotes, setMovieNotes] = useState([]);
+  const [search, setSearch] = useState("");
+  const { user } = useAuth();
+
+  const navigate = useNavigate();
+
+  function handleMovieLinks(id) {
+    navigate(`/preview/${id}`);
+  }
+  
+  useEffect( () => {
+    async function fetchMovieNotes() {
+      const response = await api.get(`/preview?user_id=${user.id}&title=${search}`);
+      setMovieNotes(response.data);
+    }
+    fetchMovieNotes();
+  }, [search]);
+  
   return (
     <Container>
-      <Header />
+      <Header setSearch={setSearch} />
       <main>
         <div>
           <h2>Meus filmes</h2>
@@ -20,63 +42,32 @@ export function Home(){
             <Button title='Adicionar Filme' icon={AiOutlinePlus} />
           </NewItem>
         </div>
-        <Movies>
-          <Link to="/preview">Interstellar</Link>
-
-          <Stars>
-            <Rating isActive />
-            <Rating isActive />
-            <Rating isActive />
-            <Rating isActive />
-            <Rating />
-          </Stars>
-
-          <p>
-          Pragas nas colheitas fizeram a civilização humana regredir para uma sociedade agrária em futuro de data desconhecida. Cooper, ex-piloto da NASA, tem uma fazenda com sua família. Murphy, a filha de dez anos de Cooper, acredita que seu quarto está assombrado por um fantasma que tenta se...
-          </p>
-
-          <Tags title="Ficção Científica" />
-          <Tags title="Drama" />
-          <Tags title="Família" />
-        </Movies>
-        <Movies>
-          <Link to="/preview">Interstellar</Link>
-
-          <Stars>
-            <Rating isActive />
-            <Rating isActive />
-            <Rating isActive />
-            <Rating isActive />
-            <Rating />
-          </Stars>
-
-          <p>
-          Pragas nas colheitas fizeram a civilização humana regredir para uma sociedade agrária em futuro de data desconhecida. Cooper, ex-piloto da NASA, tem uma fazenda com sua família. Murphy, a filha de dez anos de Cooper, acredita que seu quarto está assombrado por um fantasma que tenta se...
-          </p>
-
-          <Tags title="Ficção Científica" />
-          <Tags title="Drama" />
-          <Tags title="Família" />
-        </Movies>
-        <Movies>
-          <Link to="/preview">Interstellar</Link>
-
-          <Stars>
-            <Rating isActive />
-            <Rating isActive />
-            <Rating isActive />
-            <Rating isActive />
-            <Rating />
-          </Stars>
-
-          <p>
-          Pragas nas colheitas fizeram a civilização humana regredir para uma sociedade agrária em futuro de data desconhecida. Cooper, ex-piloto da NASA, tem uma fazenda com sua família. Murphy, a filha de dez anos de Cooper, acredita que seu quarto está assombrado por um fantasma que tenta se...
-          </p>
-
-          <Tags title="Ficção Científica" />
-          <Tags title="Drama" />
-          <Tags title="Família" />
-        </Movies>
+        {
+          movieNotes && movieNotes.map( (movie, index) => (
+            <Movies key={movie.id} >
+              <a 
+                key={movie.title} 
+                onClick={ () => handleMovieLinks(movie.id)} 
+              >
+                {movie.title}
+              </a>
+              <Stars key={index}> 
+                {
+                  // Creates an array of 5 itens to have 5 stars that will activate according to the rating number
+                  [1, 2, 3, 4, 5].map( (stars, index) => (
+                    <Rating  isActive={ stars <= movie.rating} key={index} />
+                  ))
+                }
+              </Stars>
+              <p key={String(movie.description)}>{movie.description}</p>
+              { 
+                movie.tags.map(tag => (
+                  <Tags title={tag.name} key={String(tag.name)} />
+                ))
+              }
+            </Movies>
+          ))
+        }
       </main>
     </Container>
   );
