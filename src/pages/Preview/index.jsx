@@ -17,28 +17,41 @@ import { Tags } from '../../components/Tags';
 import { Button } from '../../components/Button';
 
 export function Preview() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
+  const [time, setTime] = useState("");
+  const [day, setDay] = useState("");
   
   const { user } = useAuth();
-  
-  const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : avatarPlaceholder;
-
-  const params = useParams();
-  const navigate = useNavigate();
-  
-  function handleBack() {
-    navigate(-1);
-  }
-
-  async function handleDeleteMovie(){
-    const confirm = window.confirm("Você realmente deseja remover o filme?")
-
-    if(confirm) {
+    
+    const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : avatarPlaceholder;
+    
+    const params = useParams();
+    const navigate = useNavigate();
+    
+    function handleBack() {
+      navigate(-1);
+    }
+    
+    async function handleDeleteMovie(){
+      const confirm = window.confirm("Você realmente deseja remover o filme?")
+      
+      if(confirm) {
       await api.delete(`/preview/${params.id}`);
       navigate(-1);
     }
     return
+  }
+
+  async function formatTimeStamp() {
+    const response = await api.get(`/preview/${params.id}`); 
+    const timestamp = response.data.updated_at
+
+    const day = timestamp.split(" ")[0].replace(/[-]/g, "/");
+    const time = timestamp.split(" ")[1].slice(0, -3);
+
+    setDay(day);
+    setTime(time);
   }
 
   useEffect( () => {
@@ -47,6 +60,7 @@ export function Preview() {
       setData(response.data);
     }
     fetchMovies();
+    formatTimeStamp();
   })
 
   return (
@@ -75,9 +89,11 @@ export function Preview() {
 
         <UserPost>
           <img src={avatarUrl} alt="Imagem do usuário" />
-          <span>Por {user.name} </span>
+          <span>Por {user.name}</span>
           <AiOutlineClockCircle />
-          <span></span>
+
+              <span>{day} às {time}</span>
+  
         </UserPost>
 
         <div>
