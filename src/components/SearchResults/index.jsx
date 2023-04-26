@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import { useAuth } from '../../hooks/auth';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Container } from './styles';
 
@@ -10,8 +10,15 @@ export function SearchResults({ setSearch }) {
   const [searchResults, setSearchResults] = useState([]);
   const { user } = useAuth();
 
+  const navigate = useNavigate();
 
-  function handleSearchResults() {
+  async function handleSearchLinks(id) {
+    const linkState = navigate(`/preview/${id}`)
+    linkState
+  }
+
+  async function handleSearchResults(id) {
+    handleSearchLinks(id)
     searchResults([]);
   }
 
@@ -28,9 +35,12 @@ export function SearchResults({ setSearch }) {
       <strong>Resultados</strong>
       {
         searchResults.map((movie, index) => (
-          <Link key={String(index)} to={`/preview/${movie.id}`} onClick={handleSearchResults} >
+          <a 
+            key={String(index)}
+            onClick={ () => handleSearchResults(movie.id)}
+          >
             {movie.title}
-          </Link>
+          </a>
         ))
       }
     </Container>
